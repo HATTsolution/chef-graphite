@@ -22,6 +22,8 @@ default['graphite']['storage_schemas']['catchall'] = {
   "retentions"  => "60:100800,900:63000"
 }
 
+default['graphite']['http_proxy']['variant'] = "apache2"
+
 default['graphite']['password'] = "change_me"
 default['graphite']['url'] = "graphite"
 default['graphite']['url_aliases'] = []

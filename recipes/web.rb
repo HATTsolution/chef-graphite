@@ -1,5 +1,3 @@
-include_recipe "apache2::mod_python"
-
 basedir = node['graphite']['base_dir']
 version = node['graphite']['version']
 pyver = node['graphite']['python_version']
@@ -26,16 +24,6 @@ execute "install graphite-web" do
   creates "#{node['graphite']['doc_root']}/graphite_web-#{version}-py#{pyver}.egg-info"
   cwd "/usr/src/graphite-web-#{version}"
 end
-
-template "/etc/apache2/sites-available/graphite" do
-  source "graphite-vhost.conf.erb"
-end
-
-apache_site "000-default" do
-  enable false
-end
-
-apache_site "graphite"
 
 directory "#{basedir}/storage" do
   owner node['apache']['user']
@@ -74,3 +62,10 @@ file "#{basedir}/storage/graphite.db" do
   group node['apache']['group']
   mode 00644
 end
+
+# Front Graphite with an HTTP server
+case node["graphite"]["http_proxy"]["variant"]
+when "apache2"
+  include_recipe "graphite::proxy_apache2"
+end
+
